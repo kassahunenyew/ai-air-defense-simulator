@@ -1,0 +1,7 @@
+pygame==2.6.1
+numpy
+torch
+filterpy
+scikit-learn
+scipy
+matplotlib
