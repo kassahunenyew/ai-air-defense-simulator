@@ -812,7 +812,7 @@ def draw_hud_frame():
 def main():
     global sweep_angle, spawn_timer, ranked
     global explosions, particles, frame_count
-    global bloom_intensity
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

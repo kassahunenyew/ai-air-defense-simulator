@@ -657,7 +657,7 @@ def draw_recording_indicator(frame):
         pygame.draw.circle(screen,(255,0,0),(1370,25),8)
         screen.blit(font_small.render(
             "● REC",True,(255,0,0)),(1310,18))
-    
+
 # ── Panels ────────────────────────────────────────────────────
 
 def draw_threat_panel(ranked_list):
@@ -812,7 +812,7 @@ def draw_hud_frame():
 def main():
     global sweep_angle, spawn_timer, ranked
     global explosions, particles, frame_count
-    global bloom_intensity
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -956,7 +956,6 @@ def main():
             if inc.hit:
                 spawn_explosion(inc.target.x,
                                 inc.target.y)
-                bloom_intensity = 1.0        # ← add this
                 logger.log_event("explosion",
                                  inc.target.x,
                                  inc.target.y,
@@ -1020,8 +1019,6 @@ def main():
         dashboard.update(frame_count, missiles,
                          interceptor_ai.get_stats())
         draw_recording_indicator(frame_count)
-        draw_crt_effect(bloom_intensity)
-        bloom_intensity = max(0.0, bloom_intensity - 0.035)
 
         pygame.display.flip()
         clock.tick(config.FPS)

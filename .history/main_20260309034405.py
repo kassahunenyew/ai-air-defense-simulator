@@ -812,7 +812,7 @@ def draw_hud_frame():
 def main():
     global sweep_angle, spawn_timer, ranked
     global explosions, particles, frame_count
-    global bloom_intensity
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -1020,8 +1020,7 @@ def main():
         dashboard.update(frame_count, missiles,
                          interceptor_ai.get_stats())
         draw_recording_indicator(frame_count)
-        draw_crt_effect(bloom_intensity)
-        bloom_intensity = max(0.0, bloom_intensity - 0.035)
+        
 
         pygame.display.flip()
         clock.tick(config.FPS)
