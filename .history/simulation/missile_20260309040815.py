@@ -9,8 +9,7 @@ import config
 from perception.kalman_tracker import KalmanTracker
 from perception.lstm_predictor import LSTMPredictor
 from perception.radar_model import should_detect, get_detection_strength
-from perception.radar_model import (
-    get_detection_strength, should_detect, get_snr)
+
 TYPE_BALLISTIC = "BALLISTIC"
 TYPE_EVASIVE   = "EVASIVE"
 TYPE_STEALTH   = "STEALTH"

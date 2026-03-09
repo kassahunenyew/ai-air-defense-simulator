@@ -743,7 +743,6 @@ def draw_left_panel():
         ("RL AGENT",    "TRAINED",   (0,200,200)),
         ("HUNGARIAN",   "OPTIMAL",   (0,200,200)),
         ("RCS MODEL",   "ACTIVE",    config.RADAR_GREEN),
-        ("EW/JAMMING",  "ACTIVE",    (255,200,0)),
         ("TACTICAL HUD","ONLINE",    (255,200,0)),
         ("REPLAY",      "READY",     (255,200,0)),
         ("DASHBOARD",   "LIVE",      (255,200,0)),
@@ -1057,7 +1056,6 @@ def main():
         draw_sweep(sweep_angle)
         draw_predicted_paths(missiles)
         draw_lstm_paths(missiles)
-        draw_ew_jamming(missiles)
         draw_missiles(ranked, frame_count)
         draw_interceptors(interceptor_ai.interceptors,
                           frame_count)

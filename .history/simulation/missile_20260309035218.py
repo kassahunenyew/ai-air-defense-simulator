@@ -9,8 +9,7 @@ import config
 from perception.kalman_tracker import KalmanTracker
 from perception.lstm_predictor import LSTMPredictor
 from perception.radar_model import should_detect, get_detection_strength
-from perception.radar_model import (
-    get_detection_strength, should_detect, get_snr)
+
 TYPE_BALLISTIC = "BALLISTIC"
 TYPE_EVASIVE   = "EVASIVE"
 TYPE_STEALTH   = "STEALTH"
@@ -30,14 +29,6 @@ class Missile:
             [TYPE_BALLISTIC, TYPE_EVASIVE, TYPE_STEALTH],
             weights=TYPE_WEIGHTS
         )[0]
-
-        # RCS based on type
-        if self.type == TYPE_BALLISTIC:
-            self.rcs = config.RCS_BALLISTIC
-        elif self.type == TYPE_EVASIVE:
-            self.rcs = config.RCS_EVASIVE
-        else:
-            self.rcs = config.RCS_STEALTH
 
         angle      = random.uniform(0, 2 * math.pi)
         cx, cy     = config.RADAR_CENTER
@@ -70,16 +61,16 @@ class Missile:
         self.evasion_timer       = 0
         self.stealth_blink       = 0
 
-        self.detected            = False
-        self.detection_prob      = 0.0
-        self.jamming_factor      = 0.0
-        self.is_jamming          = False
-        self.detection_history   = []
+        self.detected          = False
+        self.detection_prob    = 0.0
+        self.jamming_factor  = 0.0   # 0-1, only used by STEALTH
+        self.is_jamming      = False
+        self.detection_history = []
 
         self.tracker        = KalmanTracker(self.x, self.y)
         self.lstm_predictor = LSTMPredictor(
             seq_len=15, output_steps=30)
-        
+
     def _evade(self):
         if self.evasion_timer > 0:
             self.evasion_timer -= 1
@@ -115,15 +106,13 @@ class Missile:
     def _update_detection(self):
         cx, cy   = config.RADAR_CENTER
         distance = math.hypot(self.x - cx, self.y - cy)
-        prob     = get_detection_strength(self.rcs, distance,
-                                          self.jamming_factor)
+        prob     = get_detection_strength(distance, self.type)
         self.detection_history.append(prob)
         if len(self.detection_history) > 10:
             self.detection_history.pop(0)
         self.detection_prob = sum(self.detection_history) / \
                               len(self.detection_history)
-        self.detected = should_detect(get_snr(self.rcs,
-                                              distance))
+        self.detected = should_detect(distance, self.type)
 
     def update(self):
         if not self.alive:
@@ -158,40 +147,10 @@ class Missile:
         if math.hypot(self.x - cx,
                       self.y - cy) <= config.PROTECTED_RADIUS:
             self.alive = False
-        # Electronic Warfare — stealth missiles jam radar
-        # when within jamming range of center
-        if self.type == TYPE_STEALTH:
-            cx, cy = config.RADAR_CENTER
-            dist_to_center = math.hypot(
-                self.x - cx, self.y - cy)
-            if dist_to_center < config.EW_JAMMING_RANGE:
-                # jamming strength increases as it gets closer
-                self.jamming_factor = 1.0 - (
-                    dist_to_center / config.EW_JAMMING_RANGE)
-                self.is_jamming = True
-            else:
-                self.jamming_factor = 0.0
-                self.is_jamming     = False    
 
     def is_visible_on_radar(self):
         if self.type == TYPE_STEALTH:
-            from perception.radar_model import (
-                get_effective_snr, should_detect)
-            cx, cy = config.RADAR_CENTER
-            dist   = math.hypot(self.x - cx,
-                                self.y - cy)
-            snr    = get_effective_snr(
-                config.RCS_STEALTH, dist,
-                self.jamming_factor)
-            detect = should_detect(snr)
-            # rolling average
-            self.detection_history.append(
-                1.0 if detect else 0.0)
-            self.detection_prob = sum(
-                self.detection_history) / len(
-                self.detection_history)
-            return detect
-        
+            return self.detected
         elif self.type == TYPE_EVASIVE:
             return self.detection_prob > 0.20
         else:

@@ -9,8 +9,7 @@ import config
 from perception.kalman_tracker import KalmanTracker
 from perception.lstm_predictor import LSTMPredictor
 from perception.radar_model import should_detect, get_detection_strength
-from perception.radar_model import (
-    get_detection_strength, should_detect, get_snr)
+
 TYPE_BALLISTIC = "BALLISTIC"
 TYPE_EVASIVE   = "EVASIVE"
 TYPE_STEALTH   = "STEALTH"
@@ -25,7 +24,7 @@ TYPE_WEIGHTS = [0.5, 0.3, 0.2]
 
 
 class Missile:
-    def __init__(self):
+   def __init__(self):
         self.type  = random.choices(
             [TYPE_BALLISTIC, TYPE_EVASIVE, TYPE_STEALTH],
             weights=TYPE_WEIGHTS
@@ -79,7 +78,7 @@ class Missile:
         self.tracker        = KalmanTracker(self.x, self.y)
         self.lstm_predictor = LSTMPredictor(
             seq_len=15, output_steps=30)
-        
+
     def _evade(self):
         if self.evasion_timer > 0:
             self.evasion_timer -= 1
@@ -116,14 +115,13 @@ class Missile:
         cx, cy   = config.RADAR_CENTER
         distance = math.hypot(self.x - cx, self.y - cy)
         prob     = get_detection_strength(self.rcs, distance,
-                                          self.jamming_factor)
+                                  self.jamming_factor)
         self.detection_history.append(prob)
         if len(self.detection_history) > 10:
             self.detection_history.pop(0)
         self.detection_prob = sum(self.detection_history) / \
                               len(self.detection_history)
-        self.detected = should_detect(get_snr(self.rcs,
-                                              distance))
+        self.detected = should_detect(distance, self.type)
 
     def update(self):
         if not self.alive:

@@ -743,7 +743,6 @@ def draw_left_panel():
         ("RL AGENT",    "TRAINED",   (0,200,200)),
         ("HUNGARIAN",   "OPTIMAL",   (0,200,200)),
         ("RCS MODEL",   "ACTIVE",    config.RADAR_GREEN),
-        ("EW/JAMMING",  "ACTIVE",    (255,200,0)),
         ("TACTICAL HUD","ONLINE",    (255,200,0)),
         ("REPLAY",      "READY",     (255,200,0)),
         ("DASHBOARD",   "LIVE",      (255,200,0)),
