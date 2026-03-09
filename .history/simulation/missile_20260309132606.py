@@ -194,7 +194,6 @@ class Missile:
 
         self.x += self.vx
         self.y += self.vy
-        self._update_phase()
 
         self._update_detection()
 

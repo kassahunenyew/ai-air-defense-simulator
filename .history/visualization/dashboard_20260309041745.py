@@ -3,7 +3,7 @@
 # Live AI Performance Dashboard
 # Opens a separate Matplotlib window with 4 live graphs
 # ============================================================
-import config
+
 import matplotlib
 matplotlib.use("TkAgg")   # works alongside Pygame
 import matplotlib.pyplot as plt
@@ -289,66 +289,6 @@ class AIDashboard:
         for sp in self.ax4.spines.values():
             sp.set_edgecolor("#004400")
         self.ax4.legend(fontsize=7,
-                        labelcolor="#00cc44",
-                        facecolor="#001400",
-                        edgecolor="#004400")
-
-        self.fig.canvas.draw()
-        self.fig.canvas.flush_events()
-        
-        # ── Plot 5: Intercept Heatmap ─────────────
-        self.ax5.clear()
-        self.ax5.set_facecolor("#001400")
-
-        if self.heatmap.max() > 0:
-            # smooth the heatmap
-            from scipy.ndimage import gaussian_filter
-            smoothed = gaussian_filter(self.heatmap, sigma=2)
-
-            self.ax5.imshow(
-                smoothed,
-                cmap="hot",
-                interpolation="bilinear",
-                origin="upper",
-                aspect="auto"
-            )
-
-            # draw protected zone circle
-            theta = np.linspace(0, 2*np.pi, 100)
-            pr    = config.PROTECTED_RADIUS / \
-                    (2 * config.RADAR_RADIUS) * 99
-            px    = 50 + pr * np.cos(theta)
-            py    = 50 + pr * np.sin(theta)
-            self.ax5.plot(px, py, 'c--',
-                          linewidth=1, alpha=0.7,
-                          label="Protected zone")
-
-            # radar boundary
-            rx = 50 + 49 * np.cos(theta)
-            ry = 50 + 49 * np.sin(theta)
-            self.ax5.plot(rx, ry, color="#004400",
-                          linewidth=1)
-        else:
-            self.ax5.text(
-                0.5, 0.5,
-                "Waiting for\nintercepts...",
-                transform=self.ax5.transAxes,
-                color="#00cc44", fontsize=10,
-                ha="center", va="center")
-
-        self.ax5.set_title(
-            "Intercept Heatmap",
-            color="#00ff44", fontsize=9,
-            fontweight="bold")
-        self.ax5.set_xlabel("X",
-                            color="#00cc44", fontsize=7)
-        self.ax5.set_ylabel("Y",
-                            color="#00cc44", fontsize=7)
-        self.ax5.tick_params(colors="#00cc44",
-                             labelsize=7)
-        for sp in self.ax5.spines.values():
-            sp.set_edgecolor("#004400")
-        self.ax5.legend(fontsize=7,
                         labelcolor="#00cc44",
                         facecolor="#001400",
                         edgecolor="#004400")

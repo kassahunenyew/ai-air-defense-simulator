@@ -110,8 +110,6 @@ class InterceptorAI:
         for inc in self.interceptors:
             inc.update()
 
-        self._coordinate_swarm()    # ← add this line
-
         # let main.py see hits BEFORE we remove them
         # count hits but don't clear inc.hit here
         for inc in self.interceptors:

@@ -3,7 +3,7 @@
 # Live AI Performance Dashboard
 # Opens a separate Matplotlib window with 4 live graphs
 # ============================================================
-import config
+
 import matplotlib
 matplotlib.use("TkAgg")   # works alongside Pygame
 import matplotlib.pyplot as plt

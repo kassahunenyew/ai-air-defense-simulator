@@ -60,7 +60,3 @@ BOOST_DURATION      = 60     # frames in boost phase
 COAST_DURATION      = 120    # frames in coast phase
 TERMINAL_ACCEL      = 0.05   # speed gain per frame in terminal
 DRAG_COEFFICIENT    = 0.995  # velocity decay per frame
-
-# Swarm Cooperation
-SWARM_FLANK_OFFSET  = 60.0   # px lateral offset for flanking
-SWARM_COORD_RANGE   = 300.0  # px — coordination activates within this range

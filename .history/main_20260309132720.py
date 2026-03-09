@@ -360,15 +360,6 @@ def draw_missiles(ranked_list, frame):
             lbl = font_small.render(
                 f"TGT-{m.id}[{t}]{prob*100:.0f}%",
                 True, color)
-        elif m.type == TYPE_BALLISTIC:
-            phase = getattr(m, 'phase', '')
-            phase_short = {"BOOST":   "BST",
-                           "COAST":   "CST",
-                           "TERMINAL":"TRM"}.get(
-                               phase, '')
-            lbl = font_small.render(
-                f"TGT-{m.id} [{t}|{phase_short}]",
-                True, color)
         else:
             lbl = font_small.render(
                 f"TGT-{m.id} [{t}]", True, color)
@@ -394,13 +385,8 @@ def draw_interceptors(inc_list, frame):
         draw_target_diamond(inc.x,inc.y,14,
                             config.INTERCEPT_BLU,
                             frame,is_locked=False)
-        is_flanking = getattr(inc, 'is_flanking', False)
-        flank_label = " [FLK]" if is_flanking else ""
-        flank_color = (255, 200, 0) if is_flanking \
-                      else config.INTERCEPT_BLU
-        lbl = font_small.render(
-            f"INT-{inc.id}{flank_label}",
-            True, flank_color)
+        lbl = font_small.render(f"INT-{inc.id}",
+                                 True,config.INTERCEPT_BLU)
         screen.blit(lbl,(int(inc.x)+20,int(inc.y)-8))
 
 # ── Predictions ───────────────────────────────────────────────
@@ -761,7 +747,6 @@ def draw_left_panel():
         ("TACTICAL HUD","ONLINE",    (255,200,0)),
         ("REPLAY",      "READY",     (255,200,0)),
         ("DASHBOARD",   "LIVE",      (255,200,0)),
-        ("SWARM",       "COORDINATING", (0,200,200)),
         ("INTERCEPTOR", "ARMED",     config.INTERCEPT_BLU),
         ("PROTECTED",   "ZONE LIVE", config.THREAT_RED),
     ]

@@ -65,13 +65,6 @@ class Missile:
 
         self.base_vx = self.vx
         self.base_vy = self.vy
-        
-        # multi-stage flight (BALLISTIC only)
-        self.phase        = PHASE_BOOST
-        self.phase_timer  = 0
-        self.base_speed   = self.speed
-        self.target_x     = tx
-        self.target_y     = ty
 
         self.alive               = True
         self.id                  = random.randint(1000, 9999)
@@ -90,50 +83,7 @@ class Missile:
         self.tracker        = KalmanTracker(self.x, self.y)
         self.lstm_predictor = LSTMPredictor(
             seq_len=15, output_steps=30)
-
-    def _update_phase(self):
-        """Update flight phase for BALLISTIC missiles."""
-        if self.type != TYPE_BALLISTIC:
-            return
-
-        self.phase_timer += 1
-
-        if self.phase == PHASE_BOOST:
-            self.speed = min(
-                self.base_speed * 2.5,
-                self.speed + config.BOOST_ACCELERATION
-            )
-            dx = self.target_x - self.x
-            dy = self.target_y - self.y
-            dist = math.hypot(dx, dy)
-            if dist > 0:
-                self.vx = self.speed * dx / dist
-                self.vy = self.speed * dy / dist
-            if self.phase_timer >= config.BOOST_DURATION:
-                self.phase       = PHASE_COAST
-                self.phase_timer = 0
-
-        elif self.phase == PHASE_COAST:
-            self.vx *= config.DRAG_COEFFICIENT
-            self.vy *= config.DRAG_COEFFICIENT
-            self.speed = math.hypot(self.vx, self.vy)
-            if self.phase_timer >= config.COAST_DURATION:
-                self.phase       = PHASE_TERMINAL
-                self.phase_timer = 0
-
-        elif self.phase == PHASE_TERMINAL:
-            self.speed = min(
-                self.base_speed * 3.0,
-                self.speed + config.TERMINAL_ACCEL
-            )
-            dx = self.target_x - self.x
-            dy = self.target_y - self.y
-            dist = math.hypot(dx, dy)
-            if dist > 0:
-                self.vx = self.speed * dx / dist
-                self.vy = self.speed * dy / dist
-
-
+        
     def _evade(self):
         if self.evasion_timer > 0:
             self.evasion_timer -= 1
@@ -194,7 +144,6 @@ class Missile:
 
         self.x += self.vx
         self.y += self.vy
-        self._update_phase()
 
         self._update_detection()
 

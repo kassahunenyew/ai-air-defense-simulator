@@ -30,32 +30,8 @@ class Interceptor:
         dist = math.hypot(dx, dy)
         if dist < 0.1:
             return
-
-        # lead target
-        lead  = min(dist / max(config.INTERCEPTOR_SPEED,
-                               0.1), 30)
-        tx    = self.target.x + self.target.vx * lead
-        ty    = self.target.y + self.target.vy * lead
-
-        # apply lateral flank offset
-        if abs(self.flank_offset) > 0.1:
-            # perpendicular to target velocity
-            tvx = self.target.vx
-            tvy = self.target.vy
-            tspeed = math.hypot(tvx, tvy)
-            if tspeed > 0.01:
-                # perpendicular vector
-                perp_x = -tvy / tspeed
-                perp_y =  tvx / tspeed
-                tx += perp_x * self.flank_offset
-                ty += perp_y * self.flank_offset
-
-        dx2   = tx - self.x
-        dy2   = ty - self.y
-        dist2 = math.hypot(dx2, dy2)
-        if dist2 > 0:
-            self.vx = config.INTERCEPTOR_SPEED * dx2/dist2
-            self.vy = config.INTERCEPTOR_SPEED * dy2/dist2
+        self.vx = config.INTERCEPTOR_SPEED * dx / dist
+        self.vy = config.INTERCEPTOR_SPEED * dy / dist
 
     def update(self):
         if not self.alive:

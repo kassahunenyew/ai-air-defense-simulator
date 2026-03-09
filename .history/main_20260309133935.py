@@ -761,7 +761,6 @@ def draw_left_panel():
         ("TACTICAL HUD","ONLINE",    (255,200,0)),
         ("REPLAY",      "READY",     (255,200,0)),
         ("DASHBOARD",   "LIVE",      (255,200,0)),
-        ("SWARM",       "COORDINATING", (0,200,200)),
         ("INTERCEPTOR", "ARMED",     config.INTERCEPT_BLU),
         ("PROTECTED",   "ZONE LIVE", config.THREAT_RED),
     ]
